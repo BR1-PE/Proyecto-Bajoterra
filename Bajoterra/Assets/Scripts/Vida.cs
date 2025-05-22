@@ -28,9 +28,16 @@ public class Vida : MonoBehaviour
             aplicarDañoContinuo(dañoPorSegundo * Time.deltaTime);
         }
 
-        if (vidaActual <= 0 && !coroutineEjecutada)
+        if (vidaActual <= 0)
         {
-            StartCoroutine(reiniciar());
+            if (objeto)
+            {
+                Destroy(gameObject);
+            }
+            else if (!coroutineEjecutada)
+            {
+                StartCoroutine(reiniciar());
+            }
         }
     }
 
@@ -62,18 +69,12 @@ public class Vida : MonoBehaviour
                 vida.color = Color.Lerp(Color.red, Color.yellow, Largo * 2);
             }
         }
-        else if (vidaActual <= 0){
-            Destroy(gameObject);
-        }
     }
 
     IEnumerator reiniciar()
     {
         if (!objeto){
-            Time.timeScale = Mathf.Lerp(Time.timeScale, 0, 0.8f * Time.unscaledDeltaTime);
-            fondo.color = new Color(0, 0, 0, Mathf.Lerp(fondo.color.a, 1, 0.8f * Time.unscaledDeltaTime));
-            yield return new WaitForSecondsRealtime(8);
-            Time.timeScale = 1;
+            yield return new WaitForSecondsRealtime(3);
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }

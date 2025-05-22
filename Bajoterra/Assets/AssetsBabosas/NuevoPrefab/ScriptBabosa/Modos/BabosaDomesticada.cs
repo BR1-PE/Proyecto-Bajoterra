@@ -16,6 +16,7 @@ public class BabosaDomesticada : IModoBabosa
     public void EntrarModo()
     {
         Debug.Log("Modo: Domesticado");
+        babosa.estadoItem(2);
         subMaquina.ChangeState(new EstadoSeguir(subMaquina, babosa));
         babosa.ejecutadoBabosa = false;
     }
@@ -70,7 +71,7 @@ public class BabosaDomesticada : IModoBabosa
         {
             if (babosa.neoBot == null)
             {
-                babosa.neoBot = babosa.bot();
+                babosa.bot();
             }
             else
             {
@@ -78,7 +79,14 @@ public class BabosaDomesticada : IModoBabosa
                 {
                     if (babosa.playerCerca)
                     {
-                        babosa.ir(babosa.player, 2);
+                        if (babosa.playerDemasiadoCerca)
+                        {
+                            babosa.ir(babosa.player, 0);
+                        }
+                        else
+                        {
+                            babosa.ir(babosa.player, 2);
+                        }
                     }
                     else
                     {
@@ -111,18 +119,23 @@ public class BabosaDomesticada : IModoBabosa
 
         public void Enter()
         {
-            babosa.animar("Existiendo", 0.05f);
+            babosa.liberaTransform();
             Debug.Log("Estado: Agarrada");
-            babosa.destruir(false, true);
+            babosa.destruir(false, true, false);
             babosa.alternarRb(babosa.enMano);
         }
         public void Update()
         {
+            babosa.animar("Existiendo", 0.05f);
             if (Input.GetKeyDown(KeyCode.G))
             {
                 babosa.enMano = false;
                 babosa.alternarRb(babosa.enMano);
                 babosa.CambiarModo(new BabosaAmigable(babosa));
+            }
+            else if (!babosa.enMano)
+            {
+                maquina.ChangeState(new EstadoSeguir(maquina, babosa));
             }
         }
         public void Exit()

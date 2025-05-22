@@ -130,6 +130,18 @@ PrefabInstance:
       propertyPath: puedeTransformar
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6238065704035081147, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
+      propertyPath: Natural
+      value: 
+      objectReference: {fileID: 6975165457294973515, guid: 60ad877134d309c4389b71fc3233dc4e, type: 3}
+    - target: {fileID: 6238065704035081147, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
+      propertyPath: Impactar
+      value: 
+      objectReference: {fileID: 6975165457294973515, guid: e19333e22daaa6a47a3224358036bb0f, type: 3}
+    - target: {fileID: 6238065704035081147, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
+      propertyPath: tiempoTransformacion
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7922842320662302907, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
       propertyPath: m_Name
       value: Granada

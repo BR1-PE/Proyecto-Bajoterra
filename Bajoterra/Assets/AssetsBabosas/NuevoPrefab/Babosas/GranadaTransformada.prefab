@@ -65,6 +65,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3510848041933705842, guid: ad4d285002c7ea446b2ade7eba3210ba, type: 3}
     - target: {fileID: 7681952972832886170, guid: 3ddcbff53bc94c2409e80a31e50c93b6, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7681952972832886170, guid: 3ddcbff53bc94c2409e80a31e50c93b6, type: 3}
       propertyPath: esperaTiempo
       value: 5
       objectReference: {fileID: 0}

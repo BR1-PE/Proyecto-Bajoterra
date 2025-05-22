@@ -10,18 +10,17 @@ GameObject:
   m_Component:
   - component: {fileID: 5096210600284387781}
   - component: {fileID: 8998653570490530045}
+  - component: {fileID: 6238065704035081147}
+  - component: {fileID: 8871621424276955731}
   - component: {fileID: 9064056603465710635}
   - component: {fileID: 8298354366550410803}
-  - component: {fileID: -1185459576518905008}
-  - component: {fileID: 5264939081256493077}
-  - component: {fileID: 8871621424276955731}
+  - component: {fileID: 6123035826931235757}
   - component: {fileID: 3359238699068502181}
   - component: {fileID: 4674651168668352312}
-  - component: {fileID: 6123035826931235757}
-  - component: {fileID: 6238065704035081147}
-  m_Layer: 3
+  - component: {fileID: 905538417549277781}
+  m_Layer: 8
   m_Name: Babosa
-  m_TagString: Babosa
+  m_TagString: Protoforma
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -62,6 +61,90 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6238065704035081147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7922842320662302907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b01dd30cb4a5e44895585b75a5b508e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  navBot: {fileID: 2357320526381765365, guid: b3cd37343e9ea644f8704fc062bc88e5, type: 3}
+  neoBot: {fileID: 0}
+  agente: {fileID: 0}
+  player: {fileID: 0}
+  playerCerca: 0
+  playerMuyCerca: 0
+  playerDemasiadoCerca: 0
+  matarCoroutine: 0
+  ejecutadoBabosa: 0
+  ejecutado: 0
+  ejecutado1: 0
+  ejeSalta: 0
+  rango: 3
+  vel0: 0
+  vel1: 0.1
+  vel2: 1
+  vel3: 5
+  Rb: {fileID: 0}
+  Anim: {fileID: 0}
+  AnimTran: 0
+  fuerza: {x: 0, y: 5, z: 0}
+  destino: {fileID: 0}
+  enMano: 0
+  comida: {fileID: 0}
+  tiempo: 0
+  tiempo1: 0
+  item: {fileID: 0}
+  disparada: 0
+  arrojada: 0
+  contacto: 0
+  anguloContacto: 0
+  velocidadDisparo: {x: 0, y: 30, z: 0}
+  Velociforma: {fileID: 2477268214682559987, guid: 3ddcbff53bc94c2409e80a31e50c93b6, type: 3}
+  Megaforma: {fileID: 0}
+  transformacion: {fileID: 0}
+  objetivo: {fileID: 0}
+  mascaraObjetivo:
+    serializedVersion: 2
+    m_Bits: 16384
+  mascaraObstaculo:
+    serializedVersion: 2
+    m_Bits: 4352
+  distanciaObjetivo: Infinity
+  direccionObjetivo: {x: 0, y: 0, z: 0}
+  contadorAtaques: 0
+  Apuntar: {fileID: 0}
+  Golpear: {fileID: 0}
+  Impactar: {fileID: 0}
+  Natural: {fileID: 0}
+  ataqueApuntar: 1
+  ataqueGolpear: 1
+  ataqueImpactar: 1
+  ataqueNatural: 1
+  tiempoTransformacion: 0
+--- !u!114 &8871621424276955731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7922842320662302907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ab4ca44b6a13254e9136232ee8527d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Nombre: 
+  Apilable: 0
+  Textura: {fileID: 8400000, guid: 397782c471718d64da848dee4e450162, type: 2}
+  Cantidad: 0
+  esBabosa: 1
+  Estado: 0
 --- !u!114 &9064056603465710635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,43 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPickable: 1
---- !u!114 &-1185459576518905008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7922842320662302907}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49fd466d9c9e1a149b90a82cd6ad49c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocidad: 0.3
-  rapidez: 0
-  altura: 0
-  velocidadRotacion: 100
-  ajusteAngulo: {x: 0, y: 0, z: 0}
-  salto: {x: 0, y: 5, z: 0}
-  impulso: 0
---- !u!114 &5264939081256493077
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7922842320662302907}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 285cdffa7e4b5e743ab319a9a4efb45d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  babosaDisparada: 0
-  puedeTransformar: 0
-  tiempoVuelo: 0
-  transformacion: {fileID: 0}
-  Audio: {fileID: 2313914375310359895, guid: 5c0fc32254dfe584ea042c057b5bb550, type: 3}
---- !u!114 &8871621424276955731
+--- !u!114 &6123035826931235757
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -133,15 +180,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7922842320662302907}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ab4ca44b6a13254e9136232ee8527d8, type: 3}
+  m_Script: {fileID: 11500000, guid: 7f2854162c35ad2418013ec3a6c0705f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Nombre: 
-  Apilable: 0
-  Textura: {fileID: 8400000, guid: 397782c471718d64da848dee4e450162, type: 2}
-  Cantidad: 0
-  esBabosa: 1
-  Estado: 0
+  Jugador: {fileID: 0}
 --- !u!54 &3359238699068502181
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -167,7 +209,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 122
+  m_Constraints: 0
   m_CollisionDetection: 2
 --- !u!65 &4674651168668352312
 BoxCollider:
@@ -176,7 +218,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7922842320662302907}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: da9cdfb28f1e4654baf12893b2053175, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -190,50 +232,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.15, y: 0.3, z: 0.1}
   m_Center: {x: 0, y: 0.15, z: 0}
---- !u!114 &6123035826931235757
-MonoBehaviour:
+--- !u!135 &905538417549277781
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7922842320662302907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f2854162c35ad2418013ec3a6c0705f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Jugador: {fileID: 0}
---- !u!114 &6238065704035081147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7922842320662302907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b01dd30cb4a5e44895585b75a5b508e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  navBot: {fileID: 2357320526381765365, guid: b3cd37343e9ea644f8704fc062bc88e5, type: 3}
-  neoBot: {fileID: 0}
-  agente: {fileID: 0}
-  player: {fileID: 0}
-  playerCerca: 0
-  playerMuyCerca: 0
-  matarCoroutine1: 0
-  matarCoroutine2: 0
-  matarCoroutine3: 0
-  ejecutadoBabosa: 0
-  ejecutado: 0
-  ejecutado1: 0
-  rango: 3
-  vel0: 0
-  vel1: 0.1
-  vel2: 1
-  vel3: 5
-  Rb: {fileID: 0}
-  impulso: 3
-  destino: {fileID: 0}
-  enMano: 0
-  comida: {fileID: 0}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}

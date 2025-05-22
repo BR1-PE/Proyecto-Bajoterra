@@ -16,8 +16,9 @@ public class BabosaInteresada : IModoBabosa
     public void EntrarModo()
     {
         Debug.Log("Modo: Interesado");
+        babosa.estadoItem(1);
         subMaquina.ChangeState(new EstadoPerseguir(subMaquina, babosa));
-        babosa.StartCoroutine(babosa.temporizador(30f));
+        babosa.StartCoroutine(babosa.temporizador(30f, 0));
         babosa.ejecutado1 = false;
     }
 
@@ -80,7 +81,7 @@ public class BabosaInteresada : IModoBabosa
         {
             if (babosa.neoBot == null)
             {
-                babosa.neoBot = babosa.bot();
+                babosa.bot();
             }
             else
             {
@@ -88,7 +89,14 @@ public class BabosaInteresada : IModoBabosa
                 {
                     if (babosa.playerMuyCerca)
                     {
-                        babosa.ir(babosa.player, 1);
+                        if (babosa.playerDemasiadoCerca)
+                        {
+                            babosa.ir(babosa.player, 0);    
+                        }
+                        else
+                        {
+                            babosa.ir(babosa.player, 1);
+                        }
                     }
                     else
                     {
@@ -125,15 +133,16 @@ public class BabosaInteresada : IModoBabosa
 
         public void Enter()
         {
+            babosa.liberaTransform();
             babosa.enMano = true;
-            babosa.animar("Existiendo", 0.05f);
             Debug.Log("Estado: Recogida");
-            babosa.destruir(false, true);
+            babosa.destruir(false, true, false);
             babosa.alternarRb(babosa.enMano);
         }
 
         public void Update()
         {
+            babosa.animar("Existiendo", 0.05f);
             if (!babosa.enMano)
             {
                 maquina.ChangeState(new EstadoPerseguir(maquina, babosa));

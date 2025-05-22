@@ -33,7 +33,6 @@ public class DisparoEnemigo : MonoBehaviour
         babosaInstanciada.GetComponent<Animator>().SetBool("Disparando", true);
         babosaInstanciada.transform.SetParent(transform, true);
         babosaInstanciada.GetComponent<BoxCollider>().enabled = false;
-        babosaInstanciada.GetComponent<IABabosaMovimiento>().enabled = false;
         babosaInstanciada.GetComponent<PickableObject>().isPickable = false;
         babosaInstanciada.GetComponent<Rigidbody>().useGravity = false;
 
@@ -42,9 +41,7 @@ public class DisparoEnemigo : MonoBehaviour
         reproductorAudio = Instantiate(Audio, transform.position, transform.rotation);
         reproductorAudio.GetComponent<ReproductorAudio>().disparar();
         reproductorAudio = null;
-
-        babosaInstanciada.GetComponent<BabosaEsDisparada>().enabled = true;
-        babosaInstanciada.GetComponent<BabosaEsDisparada>().babosaDisparada = true;
+        
         babosaInstanciada.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         babosaInstanciada.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
         babosaInstanciada.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY;

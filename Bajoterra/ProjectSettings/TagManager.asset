@@ -6,26 +6,28 @@ TagManager:
   tags:
   - PlayerInteractionZone
   - Comida
-  - Babosa
   - Personaje
   - BabosaTransformada
   - Destruible
+  - Protoforma
+  - Velociforma
+  - Megaforma
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Babosa
+  - Bloom
   - Water
   - UI
   - Imagen
   - Escape
-  - BabosaTransformada
-  - Bloom
+  - Babosa
+  - BabosaMalvada
   - Player
   - Camera
   - Objeto
   - Trigger
-  - 
+  - Destruible
   - 
   - 
   - 

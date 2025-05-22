@@ -16,13 +16,13 @@ public class BabosaSalvaje : IModoBabosa //Aplica para babosas recien instanciad
     public void EntrarModo()
     {
         Debug.Log("Modo: Salvaje");
+        babosa.estadoItem(0);
         subMaquina.ChangeState(new EstadoTranquilo(subMaquina, babosa));
     }
 
     public void Update()
     {
         subMaquina.Update();
-
         if (babosa.neoBot != null)
         {
             if (babosa.transform.position.y < -0.2f)
@@ -72,7 +72,7 @@ public class BabosaSalvaje : IModoBabosa //Aplica para babosas recien instanciad
         {
             if (babosa.neoBot == null)
             {
-                babosa.neoBot = babosa.bot();
+                babosa.bot();
             }
             else
             {
@@ -205,7 +205,7 @@ public class BabosaSalvaje : IModoBabosa //Aplica para babosas recien instanciad
             if (!babosa.agente.pathPending && babosa.agente.remainingDistance <= babosa.agente.stoppingDistance)
             {
                 Debug.Log("Escondido");
-                babosa.destruir(true, true);
+                babosa.destruir(true, true, false);
             }
         }
         public void Exit()
@@ -227,13 +227,14 @@ public class BabosaSalvaje : IModoBabosa //Aplica para babosas recien instanciad
 
         public void Enter()
         {
-            babosa.animar("Existiendo", 0.05f);
+            babosa.liberaTransform();
             Debug.Log("Estado: Defendiendo");
-            babosa.destruir(false, true);
+            babosa.destruir(false, true, false);
             babosa.alternarRb(babosa.enMano);
         }
         public void Update()
         {
+            babosa.animar("Existiendo", 0.05f);
             if (!babosa.enMano)
             {
                 maquina.ChangeState(new EstadoTranquilo(maquina, babosa));

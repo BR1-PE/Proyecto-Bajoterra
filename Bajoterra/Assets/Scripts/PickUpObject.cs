@@ -111,6 +111,7 @@ public class PickUpObject : MonoBehaviour
                 {
                     if (PickedObject.GetComponent<Item>().esBabosa)
                     {
+                        Debug.Log("Intentando guardar");
                         bool ApilableItem = PickedObject.GetComponent<Item>().Apilable;
                         RenderTexture TexturaItem = PickedObject.GetComponent<Item>().Textura;
                         int EstadoItem = PickedObject.GetComponent<Item>().Estado;

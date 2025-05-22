@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GranadaTiempo : MonoBehaviour
 {
+    [SerializeField] private int pesoAtaque;
+    [SerializeField] private float velDispersion;
     [SerializeField] private float rangoExplosion;
     [SerializeField] private float fuerzaExplosion;
     [SerializeField] private float daño;
@@ -13,16 +15,18 @@ public class GranadaTiempo : MonoBehaviour
     [SerializeField] private GameObject[] FX;
     [SerializeField] private AudioClip efecto;
     [SerializeField] private GameObject reproductorAudio;
-    public GameObject NoColisionar;
+    GameObject babosa;
 
     void Start()
     {
         if(lanzador){
-            transform.parent.gameObject.GetComponentInParent<Rigidbody>().isKinematic = false;
-            transform.parent.gameObject.GetComponentInParent<Rigidbody>().useGravity = true;
+            babosa = GetComponent<ControlAtaque>().babosa ?? GetComponentInParent<ControlAtaque>().babosa;
+            babosa.GetComponent<CerebroBabosa>().contadorAtaques += pesoAtaque;
+            StartCoroutine(babosa.GetComponent<CerebroBabosa>().temporizadorAtaque(0.1f, 3));
+
             foreach (GameObject explosivo in minas){
                 explosivo.SetActive(true);
-                explosivo.GetComponent<Rigidbody>().AddForce(explosivo.transform.up * fuerzaExplosion);
+                explosivo.GetComponent<Rigidbody>().AddExplosionForce(velDispersion, transform.position, rangoExplosion, 0.5f, ForceMode.VelocityChange);
                 explosivo.transform.SetParent(null, true);
             }
             foreach (GameObject efecto in FX){
@@ -34,6 +38,7 @@ public class GranadaTiempo : MonoBehaviour
             StartCoroutine(destruirMina(tiempoEspera));
         }
     }
+
     private void OnTriggerEnter(Collider other){
         if (other.CompareTag("Personaje")){
             foreach (GameObject efecto in FX){
@@ -48,23 +53,27 @@ public class GranadaTiempo : MonoBehaviour
             Collider[] colliders = Physics.OverlapSphere(transform.position, rangoExplosion);
             foreach (Collider objetosCercanos in colliders)
             {
-                Rigidbody rb = objetosCercanos.GetComponent<Rigidbody>();
-                if (rb != null && objetosCercanos.gameObject != NoColisionar)
+                if (!objetosCercanos.CompareTag("Protoforma"))
                 {
+                    Rigidbody rb = objetosCercanos.GetComponent<Rigidbody>();
                     if (objetosCercanos.GetComponent<Vida>() != null)
                     {
                         objetosCercanos.GetComponent<Vida>().aplicarDañoInstantaneo(daño);
                     }
-                    rb.isKinematic = false;
-                    rb.useGravity = true;
-                    rb.velocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
-                    rb.AddExplosionForce(fuerzaExplosion, transform.position, rangoExplosion, 0.5f, ForceMode.Impulse);
+                    if (rb != null)
+                    {
+                        rb.isKinematic = false;
+                        rb.useGravity = true;
+                        rb.velocity = Vector3.zero;
+                        rb.angularVelocity = Vector3.zero;
+                        rb.AddExplosionForce(fuerzaExplosion, transform.position, rangoExplosion, 0.5f, ForceMode.Impulse);
+                    }
                 }
             }
             Destroy(gameObject, 3);
         }
     }
+    
     IEnumerator destruirMina(float tiempo){
         yield return new WaitForSeconds(tiempo);
 
@@ -82,18 +91,21 @@ public class GranadaTiempo : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(transform.position, rangoExplosion);
         foreach (Collider objetosCercanos in colliders)
         {
-            Rigidbody rb = objetosCercanos.GetComponent<Rigidbody>();
-            if (rb != null && objetosCercanos.gameObject != NoColisionar)
+            if (!objetosCercanos.CompareTag("Protoforma"))
             {
+                Rigidbody rb = objetosCercanos.GetComponent<Rigidbody>();
                 if (objetosCercanos.GetComponent<Vida>() != null)
                 {
                     objetosCercanos.GetComponent<Vida>().aplicarDañoInstantaneo(daño);
                 }
-                rb.isKinematic = false;
-                rb.useGravity = true;
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.AddExplosionForce(fuerzaExplosion, transform.position, rangoExplosion, 0.5f, ForceMode.Impulse);
+                if (rb != null)
+                {
+                    rb.isKinematic = false;
+                    rb.useGravity = true;
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.AddExplosionForce(fuerzaExplosion, transform.position, rangoExplosion, 0.5f, ForceMode.Impulse);
+                }
             }
         }
         Destroy(gameObject, 3);

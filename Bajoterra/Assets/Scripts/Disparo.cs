@@ -7,6 +7,7 @@ public class Disparo : MonoBehaviour
     public Transform Cartucho;
     public Transform CartuchoTubo;
     public GameObject Tubo;
+    public GameObject Lanzador;
     public float fuerzaDisparo = 500.0f;
     public bool cargado = false;
     public Inventario listaDeBabosasScript;
@@ -17,17 +18,23 @@ public class Disparo : MonoBehaviour
     GameObject reproductorAudio;
     void Update()
     {
-        if (!cargado && controladorArmaMano)
+        if (controladorArmaMano)
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
                 if (tuboInstanciado != null && listaDeBabosasScript.BuscarTubos())
                 {
+                    if (babosaInstanciada != null)
+                    {
+                        CerebroBabosa cerebro = babosaInstanciada.GetComponent<CerebroBabosa>();
+                        cerebro.ejecutadoBabosa = true;        
+                        babosaInstanciada = null;
+                        cargado = false;
+                    }
                     tuboInstanciado.transform.SetParent(null, true);
                     tuboInstanciado.GetComponent<Rigidbody>().AddForce(CartuchoTubo.forward * 30f);
                     tuboInstanciado.GetComponent<Rigidbody>().useGravity = true;
-                    tuboInstanciado.GetComponent<BoxCollider>().enabled = true;
-                    tuboInstanciado.GetComponent<CapsuleCollider>().enabled = true;
+                    tuboInstanciado.GetComponentInChildren<MeshCollider>().enabled = true;
                     tuboInstanciado.GetComponent<PickableObject>().isPickable = true;
 
                     tuboInstanciado = null;
@@ -44,8 +51,7 @@ public class Disparo : MonoBehaviour
                         tuboInstanciado = Instantiate(Tubo, CartuchoTubo.position, CartuchoTubo.rotation);
                         tuboInstanciado.GetComponent<Rigidbody>().useGravity = false;
                         tuboInstanciado.transform.SetParent(transform, true);
-                        tuboInstanciado.GetComponent<BoxCollider>().enabled = false;
-                        tuboInstanciado.GetComponent<CapsuleCollider>().enabled = false;
+                        tuboInstanciado.GetComponentInChildren<MeshCollider>().enabled = false;
 
                         listaDeBabosasScript.ActualizarInventarioTubos();
 
@@ -55,14 +61,11 @@ public class Disparo : MonoBehaviour
                             if (listaDeBabosasScript.SacarBabosaInventario())
                             {
                                 babosaInstanciada = Instantiate(Babosa, Cartucho.position, Cartucho.rotation);
-                                babosaInstanciada.GetComponent<Item>().Estado = numeroEstado;
-                                babosaInstanciada.GetComponent<Animator>().SetBool("Disparando", true);
-                                babosaInstanciada.transform.SetParent(transform, true);
-                                babosaInstanciada.GetComponent<BoxCollider>().enabled = false;
-                                babosaInstanciada.GetComponent<IABabosaMovimiento>().enabled = false;
-                                babosaInstanciada.GetComponent<PickableObject>().isPickable = false;
-                                babosaInstanciada.GetComponent<Rigidbody>().useGravity = false;
+                                CerebroBabosa cerebro = babosaInstanciada.GetComponent<CerebroBabosa>();
+                                cerebro.destino = transform;
+                                cerebro.CambiarModo(new BabosaArmada(cerebro));
                                 cargado = true;
+                                babosaInstanciada.GetComponent<Item>().Estado = numeroEstado;
 
                                 listaDeBabosasScript.ActualizarInventarioBabosas();
                             }
@@ -79,19 +82,12 @@ public class Disparo : MonoBehaviour
         }
         if ((Input.GetMouseButtonDown(0) || !controladorArmaMano) && cargado && babosaInstanciada != null)
         {
+            cargado = false;
             reproductorAudio = Instantiate(Audio, transform.position, transform.rotation);
             reproductorAudio.GetComponent<ReproductorAudio>().disparar();
             reproductorAudio = null;
-
-            transform.GetChild(0).gameObject.SetActive(true);
-            babosaInstanciada.GetComponent<BabosaEsDisparada>().enabled = true;
-            babosaInstanciada.GetComponent<BabosaEsDisparada>().babosaDisparada = true;
-            babosaInstanciada.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-            babosaInstanciada.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
-            babosaInstanciada.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY;
-            babosaInstanciada.GetComponent<BoxCollider>().enabled = true;
-            babosaInstanciada.GetComponent<Rigidbody>().AddForce(Cartucho.up*fuerzaDisparo);
             babosaInstanciada.transform.SetParent(null, true);
+            babosaInstanciada.transform.localScale = new Vector3(1f, 1f, 1f);
 
             StartCoroutine(esperaRecarga());
             babosaInstanciada = null;
@@ -99,9 +95,9 @@ public class Disparo : MonoBehaviour
 
         if (!controladorArmaMano)
         {
-            if (transform.parent.GetComponent<MeshRenderer>().enabled)
+            if (Lanzador.GetComponent<MeshRenderer>().enabled)
             {
-                transform.parent.GetComponent<MeshRenderer>().enabled = false;
+                Lanzador.GetComponent<MeshRenderer>().enabled = false;
 
                 if (tuboInstanciado != null)
                 {
@@ -111,13 +107,13 @@ public class Disparo : MonoBehaviour
         }
         else
         {
-            if (!transform.parent.GetComponent<MeshRenderer>().enabled)
+            if (!Lanzador.GetComponent<MeshRenderer>().enabled)
             {
                 reproductorAudio = Instantiate(Audio, transform.position, transform.rotation);
                 reproductorAudio.GetComponent<ReproductorAudio>().activarArma();
                 reproductorAudio = null;
 
-                transform.parent.GetComponent<MeshRenderer>().enabled = true;
+                Lanzador.GetComponent<MeshRenderer>().enabled = true;
 
                 if (tuboInstanciado != null)
                 {
@@ -129,7 +125,7 @@ public class Disparo : MonoBehaviour
 
     IEnumerator esperaRecarga()
     {
-        yield return new WaitForSeconds(0.5f);
-        cargado = false;
+        yield return new WaitForSeconds(0.1f);
+        cargado = true;
     }
 }

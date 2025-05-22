@@ -16,6 +16,7 @@ public class BabosaAmigable : IModoBabosa
     public void EntrarModo()
     {
         Debug.Log("Modo: Amigable");
+        babosa.estadoItem(3);
         subMaquina.ChangeState(new EstadoPatrulla(subMaquina, babosa));
         babosa.ejecutadoBabosa = false;
     }
@@ -72,7 +73,7 @@ public class BabosaAmigable : IModoBabosa
         {
             if (babosa.neoBot == null)
             {
-                babosa.neoBot = babosa.bot();
+                babosa.bot();
             }
             else
             {
@@ -103,18 +104,23 @@ public class BabosaAmigable : IModoBabosa
 
         public void Enter()
         {
-            babosa.animar("Existiendo", 0.05f);
+            babosa.liberaTransform();
             Debug.Log("Estado: Agarrada");
-            babosa.destruir(false, true);
+            babosa.destruir(false, true, false);
             babosa.alternarRb(babosa.enMano);
         }
         public void Update()
         {
+            babosa.animar("Existiendo", 0.05f);
             if (Input.GetKeyDown(KeyCode.G))
             {
                 babosa.enMano = false;
                 babosa.alternarRb(babosa.enMano);
                 babosa.CambiarModo(new BabosaDomesticada(babosa));
+            }
+            else if (!babosa.enMano)
+            {
+                maquina.ChangeState(new EstadoPatrulla(maquina, babosa));
             }
         }
         public void Exit()

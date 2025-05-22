@@ -126,6 +126,14 @@ PrefabInstance:
       propertyPath: puedeTransformar
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6238065704035081147, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
+      propertyPath: Apuntar
+      value: 
+      objectReference: {fileID: 6975165457294973515, guid: 5d9d0f9a4792da94682200d637bfe7aa, type: 3}
+    - target: {fileID: 6238065704035081147, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
+      propertyPath: tiempoTransformacion
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7922842320662302907, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
       propertyPath: m_Name
       value: Gazzer

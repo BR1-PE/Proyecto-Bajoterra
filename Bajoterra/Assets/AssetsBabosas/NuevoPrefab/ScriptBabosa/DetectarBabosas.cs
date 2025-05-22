@@ -6,9 +6,11 @@ public class DetectarBabosas : MonoBehaviour
 {
     public bool triggerCerca = false;
     public bool triggerMuyCerca = false;
+    public bool triggerDemasiadoCerca = false;
     public bool escondite = false;
     public bool comida = false;
     [SerializeField] private GameObject babcom;
+
     void OnTriggerStay(Collider other)
     {
         if (other.gameObject.GetComponent<AgregarJugador>() != null)
@@ -35,6 +37,16 @@ public class DetectarBabosas : MonoBehaviour
                 if (!other.gameObject.GetComponent<CerebroBabosa>().playerMuyCerca)
                 {
                     other.gameObject.GetComponent<CerebroBabosa>().playerMuyCerca = true;
+                }
+            }
+        }
+        if (triggerDemasiadoCerca)
+        {
+            if (other.gameObject.GetComponent<CerebroBabosa>() != null)
+            {
+                if (!other.gameObject.GetComponent<CerebroBabosa>().playerDemasiadoCerca)
+                {
+                    other.gameObject.GetComponent<CerebroBabosa>().playerDemasiadoCerca = true;
                 }
             }
         }
@@ -83,6 +95,16 @@ public class DetectarBabosas : MonoBehaviour
                 if (other.gameObject.GetComponent<CerebroBabosa>().playerMuyCerca)
                 {
                     other.gameObject.GetComponent<CerebroBabosa>().playerMuyCerca = false;
+                }
+            }
+        }
+        if (triggerDemasiadoCerca)
+        {
+            if (other.gameObject.GetComponent<CerebroBabosa>() != null)
+            {
+                if (other.gameObject.GetComponent<CerebroBabosa>().playerDemasiadoCerca)
+                {
+                    other.gameObject.GetComponent<CerebroBabosa>().playerDemasiadoCerca = false;
                 }
             }
         }

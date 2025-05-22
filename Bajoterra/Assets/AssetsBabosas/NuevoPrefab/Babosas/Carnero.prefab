@@ -126,6 +126,14 @@ PrefabInstance:
       propertyPath: puedeTransformar
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6238065704035081147, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
+      propertyPath: Golpear
+      value: 
+      objectReference: {fileID: 4510242971030727731, guid: 0130c7466361d7040993370e5c9e69d4, type: 3}
+    - target: {fileID: 6238065704035081147, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
+      propertyPath: tiempoTransformacion
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7922842320662302907, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
       propertyPath: m_Name
       value: Carnero

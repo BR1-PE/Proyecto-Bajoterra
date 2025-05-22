@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GranadaImpacto : MonoBehaviour
 {
+    [SerializeField] private int pesoAtaque;
     [SerializeField] private float rangoExplosion;
     [SerializeField] private float fuerzaExplosion;
     [SerializeField] private float daño;
@@ -11,19 +12,33 @@ public class GranadaImpacto : MonoBehaviour
     [SerializeField] private GameObject[] FX;
     [SerializeField] private AudioClip efecto;
     [SerializeField] private GameObject reproductorAudio;
-    public GameObject NoColisionar;
+    GameObject babosa;
+    GameObject objetivo;
 
     void Start()
     {
+        babosa = GetComponent<ControlAtaque>().babosa;
+        objetivo = GetComponent<ControlAtaque>().objetivo;
+
+        babosa.GetComponent<CerebroBabosa>().contadorAtaques += pesoAtaque;
+        StartCoroutine(babosa.GetComponent<CerebroBabosa>().temporizadorAtaque(tiempoEspera, 2));
+        transform.SetParent(objetivo.transform, true);
+
         StartCoroutine(tiempoExplotar(tiempoEspera));
+    }
+    void Update()
+    {
+        if (babosa != null)
+        {
+            babosa.transform.position = transform.position;
+            babosa.transform.rotation = transform.rotation;            
+        }
     }
 
     IEnumerator tiempoExplotar(float tiempo){
         yield return new WaitForSeconds(tiempo);
 
         transform.SetParent(null, true);
-
-        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePosition;
 
         foreach (GameObject efecto in FX){
             efecto.SetActive(true);
@@ -36,20 +51,25 @@ public class GranadaImpacto : MonoBehaviour
         Collider[] colliders = Physics.OverlapSphere(transform.position, rangoExplosion);
         foreach (Collider objetosCercanos in colliders)
         {
-            Rigidbody rb = objetosCercanos.GetComponent<Rigidbody>();
-            if (rb != null && objetosCercanos.gameObject != NoColisionar)
+            if (!objetosCercanos.CompareTag("Protoforma"))
             {
+                Rigidbody rb = objetosCercanos.GetComponent<Rigidbody>();
                 if (objetosCercanos.GetComponent<Vida>() != null)
                 {
                     objetosCercanos.GetComponent<Vida>().aplicarDañoInstantaneo(daño);
                 }
-                rb.isKinematic = false;
-                rb.useGravity = true;
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.AddExplosionForce(fuerzaExplosion, transform.position, rangoExplosion, 0f, ForceMode.Impulse);
+                if (rb != null && objetosCercanos.gameObject != babosa)
+                {
+                    rb.isKinematic = false;
+                    rb.useGravity = true;
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.AddExplosionForce(fuerzaExplosion, transform.position, rangoExplosion, 0f, ForceMode.Impulse);
+                }
             }
         }
+        babosa.GetComponent<CerebroBabosa>().cambiarTag("Protoforma");
+        babosa = null;
         Destroy(gameObject, 3);
     }
 }
