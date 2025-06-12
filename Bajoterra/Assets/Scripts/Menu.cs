@@ -83,8 +83,7 @@ public class Menu : MonoBehaviour
 
     public void QuitarJuego()
     {
-        juegoPausado = false;
-        MenuPausa.SetActive(true);
         Application.Quit();
+        Debug.Log("Cerrando juego");
     }
 }

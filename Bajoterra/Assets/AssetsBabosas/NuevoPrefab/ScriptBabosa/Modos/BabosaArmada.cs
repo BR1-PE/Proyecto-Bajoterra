@@ -154,8 +154,8 @@ public class BabosaArmada : IModoBabosa
                     babosa.transformacion.transform.localScale = new Vector3(1f, 1f, 1f);
                     babosa.cambiarTag("Velociforma");
                     babosa.GetComponent<SphereCollider>().enabled = true;
+                    babosa.GetComponent<Rigidbody>().mass = 100f;
 
-                    Debug.Log("Transformando");
                     babosa.CambiarModo(new BabosaDisparada(babosa));
                 }
             }

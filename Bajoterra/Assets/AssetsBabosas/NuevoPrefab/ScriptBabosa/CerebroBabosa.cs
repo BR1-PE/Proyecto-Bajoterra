@@ -329,73 +329,57 @@ public class CerebroBabosa : MonoBehaviour
     //Agrega una fuerza instantanea en la direccion deseada.........................................
     public void detectarObjetivo(float radioVision, float anguloVision, float radioInicio)
     {
+        float medioAnguloRad = Mathf.Deg2Rad * (anguloVision / 2f);
+        float desplazamiento = 0.6f / Mathf.Tan(medioAnguloRad);
+        Vector3 origen = transform.position - transform.forward * desplazamiento;
+
         objetivo = null;
+        direccionObjetivo = Vector3.zero;
         distanciaObjetivo = float.MaxValue;
         float mejorPuntaje = float.MinValue;
-        Vector3 dirObjetivoSeleccionado = Vector3.zero;
 
-        Collider[] candidatos = Physics.OverlapSphere(transform.position, radioVision, mascaraObjetivo);
-
-        int puntosOrigen = 8;
-        Vector3[] puntosInicio = new Vector3[puntosOrigen];
-        Quaternion rotacion = Quaternion.LookRotation(transform.up, transform.forward);
-        for (int i = 0; i < puntosOrigen; i++)
-        {
-            float angulo = i * Mathf.PI * 2f / puntosOrigen;
-            Vector3 dirEnCirculo = new Vector3(Mathf.Cos(angulo), 0f, Mathf.Sin(angulo));
-            Vector3 offset = rotacion * dirEnCirculo * radioInicio;
-            puntosInicio[i] = transform.position + offset;
-        }
+        Collider[] candidatos = Physics.OverlapSphere(transform.position, radioVision + desplazamiento, mascaraObjetivo);
 
         foreach (Collider col in candidatos)
         {
-            foreach (Vector3 origen in puntosInicio)
+            Vector3 puntoCercano = col.ClosestPoint(origen);
+            Vector3 direccion = (puntoCercano - origen);
+            float distancia = direccion.magnitude;
+
+            if (distancia < desplazamiento) continue;
+
+            float angulo = Vector3.Angle(transform.forward, direccion);
+
+            if (angulo > anguloVision / 2f) continue;
+
+            direccion.Normalize();
+
+            bool sinObstaculo = !Physics.Raycast(origen, direccion, distancia, mascaraObstaculo);
+            Debug.DrawRay(origen, direccion * distancia, sinObstaculo ? Color.green : Color.red);
+
+            if (!sinObstaculo) continue;
+
+            float anguloNorm = 1f - (angulo / (anguloVision / 2f));
+            float distanciaNorm = Mathf.Clamp01(1f - ((distancia - desplazamiento) / radioVision));
+            float puntaje = (anguloNorm * 0.2f) + (distanciaNorm * 0.8f) + Random.Range(-0.05f, 0.05f);
+
+            if (puntaje > mejorPuntaje)
             {
-                Vector3 dirAlObjetivo = (col.transform.position - origen).normalized;
-                float distancia = Vector3.Distance(origen, col.transform.position);
-                float anguloRelativo = Vector3.Angle(transform.forward, dirAlObjetivo);
-
-                if (anguloRelativo <= anguloVision / 2f)
-                {
-                    bool sinObstaculo = !Physics.Raycast(origen, dirAlObjetivo, distancia, mascaraObstaculo);
-                    Color color = sinObstaculo ? Color.green : Color.red;
-                    Debug.DrawRay(origen, dirAlObjetivo * distancia, color);
-
-                    if (sinObstaculo)
-                    {
-                        float anguloNorm = 1f - (anguloRelativo / (anguloVision / 2f));
-                        float distanciaNorm = 1f - (distancia / radioVision);
-                        float puntaje = (anguloNorm * 0.2f) + (distanciaNorm * 0.8f);
-                        puntaje += Random.Range(-0.05f, 0.05f);
-
-                        if (puntaje > mejorPuntaje)
-                        {
-                            mejorPuntaje = puntaje;
-                            distanciaObjetivo = distancia;
-                            objetivo = col.gameObject;
-                            dirObjetivoSeleccionado = dirAlObjetivo;
-                        }
-                    }
-                }
+                mejorPuntaje = puntaje;
+                objetivo = col.gameObject;
+                direccionObjetivo = direccion;
+                distanciaObjetivo = distancia - desplazamiento;
             }
         }
 
         Vector3 derecha = Quaternion.Euler(0, anguloVision / 2f, 0) * transform.forward;
         Vector3 izquierda = Quaternion.Euler(0, -anguloVision / 2f, 0) * transform.forward;
+        Debug.DrawLine(origen, origen + derecha * radioVision, Color.yellow);
+        Debug.DrawLine(origen, origen + izquierda * radioVision, Color.yellow);
+        Debug.DrawRay(origen, transform.forward * radioVision, Color.cyan);
 
-        Debug.DrawLine(transform.position, transform.position + derecha * radioVision, Color.yellow);
-        Debug.DrawLine(transform.position, transform.position + izquierda * radioVision, Color.yellow);
-        Debug.DrawRay(transform.position, transform.forward * radioVision, Color.cyan);
-        for (int i = 0; i < puntosOrigen; i++)
-        {
-            int siguiente = (i + 1) % puntosOrigen;
-            Debug.DrawLine(puntosInicio[i], puntosInicio[siguiente], Color.cyan);
-        }
         if (objetivo != null)
-        {
-            Debug.DrawRay(transform.position, dirObjetivoSeleccionado * distanciaObjetivo, Color.blue);
-        }
-        direccionObjetivo = dirObjetivoSeleccionado;
+            Debug.DrawRay(origen, direccionObjetivo * distanciaObjetivo, Color.blue);
     }
     //Detecta posibles objetivos para la babosa transformada........................................
     public GameObject instanciar(GameObject a, Vector3 b, Quaternion c)

@@ -264,23 +264,16 @@ public class BabosaSalvaje : IModoBabosa //Aplica para babosas recien instanciad
         }
         public void Update()
         {
-            if (babosa.comida != null)
-            {
-                babosa.ir(babosa.comida, 1);
-            }
+            babosa.ir(babosa.comida, 1);
             if (!babosa.agente.pathPending && babosa.agente.remainingDistance <= babosa.agente.stoppingDistance)
             {
                 Debug.Log("Comiendo");
                 babosa.CambiarModo(new BabosaInteresada(babosa));
 
             }
-            else if (babosa.comida == null || babosa.comida.parent != null)
+            else if (babosa.comida == null || babosa.playerCerca)
             {
                 maquina.ChangeState(new EstadoTranquilo(maquina, babosa));
-            }
-            if (babosa.playerCerca)
-            {
-                maquina.ChangeState(new EstadoCorriendo(maquina, babosa));
             }
         }
         public void Exit()

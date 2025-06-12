@@ -11,7 +11,7 @@ public class DetectarBabosas : MonoBehaviour
     public bool comida = false;
     [SerializeField] private GameObject babcom;
 
-    void OnTriggerStay(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.GetComponent<AgregarJugador>() != null)
         {

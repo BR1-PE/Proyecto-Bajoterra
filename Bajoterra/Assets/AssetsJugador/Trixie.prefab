@@ -48,9 +48,73 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8385963370558160516, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -8242380463263970142, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -7875876994971624841, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -6953615723657534056, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -6870321783309579346, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -6372620159720347986, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -4179500181456132309, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -2665077149888147841, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -2407164446267925390, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -2171330346791543801, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 904427600728635598, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
       propertyPath: m_Name
       value: Trixie
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1812494363783327376, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 2334065236593545384, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3173350404989469208, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5146311209808018398, guid: 192a0d12773251e46adae024b87c0ab8, type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

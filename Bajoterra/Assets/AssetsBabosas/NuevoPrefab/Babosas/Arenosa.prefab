@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: puedeTransformar
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6238065704035081147, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
+      propertyPath: tiempoTransformacion
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7922842320662302907, guid: 341cd45be2b5e5244915922fbcb53acd, type: 3}
       propertyPath: m_Name
       value: Arenosa

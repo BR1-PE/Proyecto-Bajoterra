@@ -12,7 +12,7 @@ public class NavMeshSpawner : MonoBehaviour
 
     private Collider areaCollider; // El collider que define el volumen
 
-    private void Start()
+    void OnEnable()
     {
         areaCollider = GetComponent<Collider>();
 
@@ -57,6 +57,7 @@ public class NavMeshSpawner : MonoBehaviour
 
             yield return null; // Esperar al siguiente frame para evitar bloqueos
         }
+        this.enabled = false;
     }
 
     private Vector3 GenerarPosicionAleatoriaEnCollider()

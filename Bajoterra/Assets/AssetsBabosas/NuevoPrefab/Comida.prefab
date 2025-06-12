@@ -15,8 +15,7 @@ GameObject:
   - component: {fileID: 6855247968036285116}
   - component: {fileID: 3089497974693598230}
   - component: {fileID: 5283690782147388377}
-  - component: {fileID: -7229520613358111197}
-  - component: {fileID: 7136557535563852439}
+  - component: {fileID: 6066953198437069242}
   m_Layer: 12
   m_Name: Comida
   m_TagString: Comida
@@ -102,7 +101,7 @@ MeshCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1032
+    m_Bits: 1800
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -169,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPickable: 1
---- !u!114 &-7229520613358111197
+--- !u!114 &6066953198437069242
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -178,32 +177,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1828926470004187601}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 684ae4511dc8f1042a9f4d63d665085d, type: 3}
+  m_Script: {fileID: 11500000, guid: 26292c0e27eccb045bdd743691140b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerCerca: 0
-  triggerMuyCerca: 0
-  escondite: 0
-  comida: 1
-  babcom: {fileID: 0}
---- !u!135 &7136557535563852439
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828926470004187601}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
+  babosa: {fileID: 0}
+  tiempo: 1
+  rango: 30
+  capas:
     serializedVersion: 2
-    m_Bits: 8
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 16375
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 15
-  m_Center: {x: 0, y: 0, z: 0}
+    m_Bits: 256

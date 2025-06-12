@@ -278,6 +278,7 @@ public class BabosaDisparada : IModoBabosa
                     babosa.arrojada = false;
                     babosa.contacto = false;
                     babosa.cambiarTag("Protoforma");
+                    babosa.GetComponent<Rigidbody>().mass = 1f;
                     switch (babosa.estadoItem(null))
                     {
                         case 0: babosa.CambiarModo(new BabosaSalvaje(babosa)); break;

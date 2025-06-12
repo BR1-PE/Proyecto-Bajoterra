@@ -175,10 +175,7 @@ public class BabosaInteresada : IModoBabosa
 
         public void Update()
         {
-            if (babosa.comida != null)
-            {
-                babosa.ir(babosa.comida, 2);
-            }
+            babosa.ir(babosa.comida, 2);
             if (!babosa.agente.pathPending && babosa.agente.remainingDistance <= babosa.agente.stoppingDistance)
             {
                 Debug.Log("Comiendo");
