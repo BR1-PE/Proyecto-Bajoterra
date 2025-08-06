@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Permite agarrar objetos o babosas
+/// </summary>
 public class PickUpObject : MonoBehaviour
 {
     public GameObject ObjectToPickUp;
@@ -9,187 +11,188 @@ public class PickUpObject : MonoBehaviour
     public GameObject objetoComida;
     public Transform interactionZone;
     public Inventario listaDeBabosasScript;
-    public bool controladorArmaMano = false;
-    public bool soltar = false;
-    public bool soltarBabosa = false;
+    public bool armaActiva = false;
+    public float velocidad;
+
+    private CerebroBabosa CB;
+    private Rigidbody Rb;
+    private Collider[] Col;
+    private bool hold;
+    private bool estaPresionando;
+    private float tiempoPresionado;
 
     void Update()
     {
-        if(ObjectToPickUp != null && ObjectToPickUp.GetComponent<PickableObject>().isPickable == true && PickedObject == null && !controladorArmaMano)
+        if (ObjectToPickUp != null && ObjectToPickUp.GetComponent<PickableObject>().isPickable == true && PickedObject == null && !armaActiva)
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetMouseButtonUp(0))
             {
-                PickedObject = ObjectToPickUp;
-
-                if (PickedObject.GetComponent<CerebroBabosa>() != null)
-                {
-                    PickedObject.GetComponent<CerebroBabosa>().enMano = true;
-
-                    PickedObject.GetComponent<Animator>().SetBool("Caminando", false);
-                    PickedObject.GetComponent<Animator>().SetBool("Corriendo", false);
-                    PickedObject.GetComponent<Animator>().SetBool("Saltando", false);
-                    PickedObject.GetComponent<Animator>().SetBool("Flotando", true);
-                    PickedObject.GetComponent<Animator>().SetBool("Cayendo1", true);
-                }
-                else
-                {
-                    PickedObject.GetComponent<Rigidbody>().useGravity = false;
-                    PickedObject.GetComponent<Rigidbody>().isKinematic = true;
-
-                    if (PickedObject.GetComponent<BoxCollider>() != null)
-                    {
-                        PickedObject.GetComponent<BoxCollider>().enabled = false;
-                    }
-                    if (PickedObject.GetComponent<SphereCollider>() != null)
-                    {
-                        PickedObject.GetComponent<SphereCollider>().enabled = false;
-                    }
-                    if (PickedObject.GetComponent<CapsuleCollider>() != null)
-                    {
-                        PickedObject.GetComponent<CapsuleCollider>().enabled = false;
-                    }
-                }
-                
-                PickedObject.GetComponent<PickableObject>().isPickable = false;
-                PickedObject.transform.SetParent(interactionZone, true);
-                
-                PickedObject.transform.position = interactionZone.position;
-                PickedObject.transform.rotation = interactionZone.rotation;
-
+                AgarrarObjeto();
             }
         }
         else if (PickedObject != null)
         {
-            if (PickedObject.GetComponent<CerebroBabosa>() != null)
+            if (Input.GetMouseButtonDown(0))
             {
-                soltarBabosa = PickedObject.GetComponent<CerebroBabosa>().enMano;
+                estaPresionando = true;
+                hold = false;
+                tiempoPresionado = 0f;
             }
-            else
+            if (estaPresionando)
             {
-                soltarBabosa = true;
+                tiempoPresionado += Time.deltaTime;
+                if (tiempoPresionado >= 0.3f && !hold) hold = true;
             }
-
-            if (Input.GetKeyDown(KeyCode.F) || controladorArmaMano || soltar || !soltarBabosa)
+            if (Input.GetMouseButtonUp(0) || armaActiva)
             {
-                PickedObject.transform.SetParent(null, true);
-
-                if (PickedObject.GetComponent<CerebroBabosa>() != null)
-                {
-                    PickedObject.GetComponent<CerebroBabosa>().enMano = false;
-                }
-                else
-                {
-                    PickedObject.GetComponent<Rigidbody>().useGravity = true;
-                    PickedObject.GetComponent<Rigidbody>().isKinematic = false;
-
-                    if (PickedObject.GetComponent<BoxCollider>() != null)
-                    {
-                        PickedObject.GetComponent<BoxCollider>().enabled = true;
-                    }
-                    if (PickedObject.GetComponent<SphereCollider>() != null)
-                    {
-                        PickedObject.GetComponent<SphereCollider>().enabled = true;
-                    }
-                    if (PickedObject.GetComponent<CapsuleCollider>() != null)
-                    {
-                        PickedObject.GetComponent<CapsuleCollider>().enabled = true;
-                    }
-                }
-
-                PickedObject.GetComponent<PickableObject>().isPickable = true;
-                PickedObject.transform.SetParent(null, true);
+                if (hold) LanzarObjeto();
+                else SoltarObjeto();
 
                 PickedObject = null;
+                estaPresionando = false;
+                tiempoPresionado = 0f;
             }
-            else if (Input.GetMouseButtonDown(1))
+
+            if (Input.GetMouseButtonDown(1))
             {
-                Item nuevoItem = PickedObject.GetComponent<Item>();
-
-                string NombreItem = PickedObject.transform.name.Replace("(Clone)", "");
-
-                if (nuevoItem != null)
+                if (GuardarObjeto())
                 {
-                    if (PickedObject.GetComponent<Item>().esBabosa)
-                    {
-                        Debug.Log("Intentando guardar");
-                        bool ApilableItem = PickedObject.GetComponent<Item>().Apilable;
-                        RenderTexture TexturaItem = PickedObject.GetComponent<Item>().Textura;
-                        int EstadoItem = PickedObject.GetComponent<Item>().Estado;
+                    LimpiarDatos();
+                    Destroy(PickedObject);
+                    PickedObject = null;
+                    estaPresionando = false;
+                    tiempoPresionado = 0f;
+                }
+            }
 
-                        nuevoItem.Nombre = NombreItem;
-                        nuevoItem.Apilable = ApilableItem;
-                        nuevoItem.Textura = TexturaItem;
-                        nuevoItem.Estado = EstadoItem;
-
-                        if (listaDeBabosasScript.AgregarItemBabosa(nuevoItem))
-                        {
-                            Destroy(PickedObject);
-                            PickedObject = null;
-                        }
-
-                        listaDeBabosasScript.ActualizarInventarioBabosas();
-                    }
-                    else
-                    {
-                        bool ApilableItem = PickedObject.GetComponent<Item>().Apilable;
-                        RenderTexture TexturaItem = PickedObject.GetComponent<Item>().Textura;
-                        int CantidadItem = PickedObject.GetComponent<Item>().Cantidad;
-
-                        nuevoItem.Nombre = NombreItem;
-                        nuevoItem.Apilable = ApilableItem;
-                        nuevoItem.Textura = TexturaItem;
-
-                        if (listaDeBabosasScript.AgregarItemObjeto(nuevoItem))
-                        {
-                            Destroy(PickedObject);
-                            PickedObject = null;
-                        }
-                    }
-
-                    listaDeBabosasScript.ActualizarMochila();
+            if (CB != null)
+            {
+                if (!CB.sujetada)
+                {
+                    SoltarObjeto();
+                    PickedObject = null;
+                    estaPresionando = false;
+                    tiempoPresionado = 0f;
                 }
             }
         }
-        
-        if (Input.GetKeyDown(KeyCode.Q) && PickedObject == null && !controladorArmaMano)
+        if (Input.GetKeyDown(KeyCode.Q) && PickedObject == null && !armaActiva)
         {
             if (listaDeBabosasScript.SacarComidaInventario())
             {
-                PickedObject = Instantiate(objetoComida, transform.position, transform.rotation);
-
-                PickedObject.GetComponent<PickableObject>().isPickable = false;
-
-                if (PickedObject.transform.parent != null)
-                {
-                    if (PickedObject.transform.parent.gameObject != null)
-                    {
-                        Destroy(PickedObject.transform.parent.gameObject);
-                    }
-                }
-
-                PickedObject.transform.SetParent(interactionZone, true);
-                PickedObject.GetComponent<Rigidbody>().useGravity = false;
-                PickedObject.GetComponent<Rigidbody>().isKinematic = true;
-
-                if (PickedObject.GetComponent<BoxCollider>() != null)
-                {
-                    PickedObject.GetComponent<BoxCollider>().enabled = false;
-                }
-                if (PickedObject.GetComponent<SphereCollider>() != null)
-                {
-                    PickedObject.GetComponent<SphereCollider>().enabled = false;
-                }
-                if (PickedObject.GetComponent<CapsuleCollider>() != null)
-                {
-                    PickedObject.GetComponent<CapsuleCollider>().enabled = false;
-                }
-
-                PickedObject.transform.position = interactionZone.position;
-                PickedObject.transform.rotation = interactionZone.rotation;
+                ObjectToPickUp = Instantiate(objetoComida, transform.position, transform.rotation);
+                AgarrarObjeto();
             }
 
             listaDeBabosasScript.ActualizarMochila();
         }
-        soltar = false;
+    }
+    /// <summary>
+    /// Posiciona el objeto en la mano del jugador
+    /// </summary>
+    private void AgarrarObjeto()
+    {
+        Vector3 offset = Vector3.zero;
+        PickedObject = ObjectToPickUp;
+        CB = PickedObject.GetComponent<CerebroBabosa>();
+
+        if (CB != null)
+        {
+            CB.sujetada = true;
+            offset = new Vector3(0f, 0.2f, 0f);
+        }
+        else
+        {
+            Rb = PickedObject.GetComponent<Rigidbody>();
+            Col = PickedObject.GetComponents<Collider>();
+
+            Rb.useGravity = false;
+            Rb.isKinematic = true;
+
+            foreach (Collider c in Col) c.enabled = false;
+        }
+        PickedObject.GetComponent<PickableObject>().isPickable = false;
+        PickedObject.transform.SetParent(interactionZone, true);
+
+        PickedObject.transform.position = interactionZone.position - offset;
+        PickedObject.transform.rotation = interactionZone.rotation;
+    }
+    /// <summary>
+    /// Deja caer el objeto o babosa que tenía en mano
+    /// </summary>
+    private void SoltarObjeto()
+    {
+        if (CB != null)
+        {
+            CB.sujetada = false;
+        }
+        else
+        {
+            Rb.useGravity = true;
+            Rb.isKinematic = false;
+            foreach (Collider c in Col) c.enabled = true;
+        }
+        PickedObject.GetComponent<PickableObject>().isPickable = true;
+        PickedObject.transform.SetParent(null, true);
+        LimpiarDatos();
+    }
+    /// <summary>
+    /// Lanza el objeto o babosa que tenía en mano
+    /// </summary>
+    private void LanzarObjeto()
+    {
+        if (CB != null)
+        {
+            CB.sujetada = false;
+            CB.ActivarFisicas();
+            Rb = PickedObject.GetComponent<Rigidbody>();
+        }
+        else
+        {
+            Rb.useGravity = true;
+            Rb.isKinematic = false;
+            foreach (Collider c in Col) c.enabled = true;
+        }
+        PickedObject.GetComponent<PickableObject>().isPickable = true;
+        PickedObject.transform.SetParent(null, true);
+        Rb.AddForce(-interactionZone.forward * velocidad, ForceMode.VelocityChange);
+        LimpiarDatos();
+    }
+    /// <summary>
+    /// Guarda el objeto o babosa como información en el inventario
+    /// </summary>
+    /// <returns>Devuelve verdadero si se logró guardar con éxito</returns>
+    private bool GuardarObjeto()
+    {
+        Item nuevoItem = PickedObject.GetComponent<Item>();
+        string NombreItem = PickedObject.transform.name.Replace("(Clone)", "");
+        nuevoItem.Nombre = NombreItem;
+
+        if (nuevoItem != null)
+        {
+            if (PickedObject.GetComponent<Item>().esBabosa)
+            {
+                if (listaDeBabosasScript.AgregarItemBabosa(nuevoItem))
+                {
+                    listaDeBabosasScript.ActualizarInventarioBabosas();
+                    return true;
+                }
+            }
+            else if (listaDeBabosasScript.AgregarItemObjeto(nuevoItem))
+            {
+                listaDeBabosasScript.ActualizarMochila();
+                return true;
+            }
+        }
+        return false;
+    }
+    /// <summary>
+    /// Limpia los datos sobre el objeto o babosa
+    /// </summary>
+    private void LimpiarDatos()
+    {
+        CB = null;
+        Rb = null;
+        Col = null;
     }
 }

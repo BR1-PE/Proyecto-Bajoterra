@@ -1,108 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Instancia tubos y babosas para dispararlos
+/// </summary>
 public class Disparo : MonoBehaviour
 {
     public Transform Cartucho;
     public Transform CartuchoTubo;
     public GameObject Tubo;
     public GameObject Lanzador;
-    public float fuerzaDisparo = 500.0f;
-    public bool cargado = false;
+    public float velocidadDisparo = 30f;
+    public float velocidadDescargado = 3f;
     public Inventario listaDeBabosasScript;
-    GameObject babosaInstanciada = null;
-    GameObject tuboInstanciado = null;
-    public bool controladorArmaMano = false;
+    public bool armaActiva = false;
     public GameObject Audio;
-    GameObject reproductorAudio;
+    private GameObject babosaInstanciada = null;
+    private GameObject tuboInstanciado = null;
+    private GameObject reproductorAudio;
+    private bool disparable = false;
+    private Rigidbody RbTubo;
+    private Rigidbody Rb;
+    private CerebroBabosa CB;
     void Update()
     {
-        if (controladorArmaMano)
+        if (armaActiva)
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                if (tuboInstanciado != null && listaDeBabosasScript.BuscarTubos())
-                {
-                    if (babosaInstanciada != null)
-                    {
-                        CerebroBabosa cerebro = babosaInstanciada.GetComponent<CerebroBabosa>();
-                        cerebro.ejecutadoBabosa = true;        
-                        babosaInstanciada = null;
-                        cargado = false;
-                    }
-                    tuboInstanciado.transform.SetParent(null, true);
-                    tuboInstanciado.GetComponent<Rigidbody>().AddForce(CartuchoTubo.forward * 30f);
-                    tuboInstanciado.GetComponent<Rigidbody>().useGravity = true;
-                    tuboInstanciado.GetComponentInChildren<MeshCollider>().enabled = true;
-                    tuboInstanciado.GetComponent<PickableObject>().isPickable = true;
-
-                    tuboInstanciado = null;
-                }
-
                 if (listaDeBabosasScript.BuscarTubos())
                 {
                     transform.GetChild(0).gameObject.SetActive(false);
-                    GameObject Babosa;
-                    Babosa = listaDeBabosasScript.obtenerBabosaInventario();
-                    
+
                     if (listaDeBabosasScript.SacarTuboInventario())
                     {
-                        tuboInstanciado = Instantiate(Tubo, CartuchoTubo.position, CartuchoTubo.rotation);
-                        tuboInstanciado.GetComponent<Rigidbody>().useGravity = false;
-                        tuboInstanciado.transform.SetParent(transform, true);
-                        tuboInstanciado.GetComponentInChildren<MeshCollider>().enabled = false;
-
+                        RecargarTubo();
                         listaDeBabosasScript.ActualizarInventarioTubos();
 
                         if (listaDeBabosasScript.BuscarBabosas())
                         {
-                            int numeroEstado = listaDeBabosasScript.obtenerEstadoBabosaInventario();
-                            if (listaDeBabosasScript.SacarBabosaInventario())
-                            {
-                                babosaInstanciada = Instantiate(Babosa, Cartucho.position, Cartucho.rotation);
-                                CerebroBabosa cerebro = babosaInstanciada.GetComponent<CerebroBabosa>();
-                                cerebro.destino = transform;
-                                cerebro.CambiarModo(new BabosaArmada(cerebro));
-                                cargado = true;
-                                babosaInstanciada.GetComponent<Item>().Estado = numeroEstado;
-
-                                listaDeBabosasScript.ActualizarInventarioBabosas();
-                            }
+                            StartCoroutine(RecargarBabosa());
                         }
                     }
                 }
-                else
-                {
-                    Debug.Log("Debes tener babosas y tubos p crack");
-                }
-
+                listaDeBabosasScript.ActualizarInventarioBabosas();
                 listaDeBabosasScript.ActualizarMochila();
             }
+            if (Input.GetMouseButtonDown(0) && disparable && babosaInstanciada != null)
+            {
+                DispararArma();
+            }
         }
-        if ((Input.GetMouseButtonDown(0) || !controladorArmaMano) && cargado && babosaInstanciada != null)
-        {
-            cargado = false;
-            reproductorAudio = Instantiate(Audio, transform.position, transform.rotation);
-            reproductorAudio.GetComponent<ReproductorAudio>().disparar();
-            reproductorAudio = null;
-            babosaInstanciada.transform.SetParent(null, true);
-            babosaInstanciada.transform.localScale = new Vector3(1f, 1f, 1f);
-
-            StartCoroutine(esperaRecarga());
-            babosaInstanciada = null;
-        }
-
-        if (!controladorArmaMano)
+        if (!armaActiva)
         {
             if (Lanzador.GetComponent<MeshRenderer>().enabled)
             {
                 Lanzador.GetComponent<MeshRenderer>().enabled = false;
 
-                if (tuboInstanciado != null)
-                {
-                    tuboInstanciado.SetActive(false);
-                }
+                tuboInstanciado?.SetActive(false);
+                babosaInstanciada?.SetActive(false);
             }
         }
         else
@@ -115,17 +71,92 @@ public class Disparo : MonoBehaviour
 
                 Lanzador.GetComponent<MeshRenderer>().enabled = true;
 
-                if (tuboInstanciado != null)
-                {
-                    tuboInstanciado.SetActive(true);
-                }
+                tuboInstanciado?.SetActive(true);
+                babosaInstanciada?.SetActive(true);
             }
         }
     }
+    /// <summary>
+    /// Expulsa un tubo y una babosa si es que los hay e instancia un tubo para babosa
+    /// </summary>
+    private void RecargarTubo()
+    {
+        VaciarArma();
+        tuboInstanciado = Instantiate(Tubo, CartuchoTubo.position, CartuchoTubo.rotation);
+        RbTubo = tuboInstanciado.GetComponent<Rigidbody>();
+        RbTubo.useGravity = false;
+        tuboInstanciado.transform.SetParent(transform, true);
+        tuboInstanciado.GetComponentInChildren<MeshCollider>().enabled = false;
+    }
+    /// <summary>
+    /// Instancia una babosa
+    /// </summary>
+    private IEnumerator RecargarBabosa()
+    {
+        GameObject Babosa;
+        Babosa = listaDeBabosasScript.obtenerBabosaInventario();
+        int numeroEstado = listaDeBabosasScript.obtenerEstadoBabosaInventario();
+        if (listaDeBabosasScript.SacarBabosaInventario())
+        {
+            babosaInstanciada = Instantiate(Babosa, Cartucho.position, Cartucho.rotation);
+            yield return null;
+            CB = babosaInstanciada.GetComponent<CerebroBabosa>();
+            CB.CambiarModo(new BabosaArmada(CB));
+            Rb = babosaInstanciada.GetComponent<Rigidbody>();
+            babosaInstanciada.transform.position = Cartucho.position;
+            babosaInstanciada.transform.rotation = Cartucho.rotation;
+            babosaInstanciada.transform.SetParent(Cartucho, true);
+            babosaInstanciada.GetComponent<Item>().Estado = numeroEstado;
+            disparable = true;
+        }
+    }
+    /// <summary>
+    /// Expulsa un tubo y una babosa si estaban redisparables
+    /// </summary>
+    private void VaciarArma()
+    {
+        if (babosaInstanciada != null)
+        {
+            CB.soltada = true;
+            CB.ActivarFisicas();
+            Rb.AddForce(CartuchoTubo.forward * velocidadDescargado, ForceMode.VelocityChange);
+            babosaInstanciada.transform.SetParent(null, true);
+            babosaInstanciada = null;
+        }
+        if (tuboInstanciado != null)
+        {
+            tuboInstanciado.transform.SetParent(null, true);
+            RbTubo.AddForce(CartuchoTubo.forward * velocidadDescargado, ForceMode.VelocityChange);
+            RbTubo.useGravity = true;
+            tuboInstanciado.GetComponentInChildren<MeshCollider>().enabled = true;
+            tuboInstanciado.GetComponent<PickableObject>().isPickable = true;
+            tuboInstanciado = null;
+        }
+    }
+    /// <summary>
+    /// Dispara a la babosa
+    /// </summary>
+    private void DispararArma()
+    {
+        reproductorAudio = Instantiate(Audio, transform.position, transform.rotation);
+        reproductorAudio.GetComponent<ReproductorAudio>().disparar();
+        reproductorAudio = null;
+        babosaInstanciada.transform.SetParent(null, true);
+        CB.disparada = true;
+        CB.ActivarFisicas();
+        CB.velocidadDisparo = velocidadDisparo;
+        Rb.AddForce(CartuchoTubo.up * velocidadDisparo, ForceMode.VelocityChange);
+        disparable = false;
 
-    IEnumerator esperaRecarga()
+        StartCoroutine(EsperaRecarga());
+        babosaInstanciada = null;
+    }
+    /// <summary>
+    /// Tiempo de retraso entre disparos
+    /// </summary>
+    private IEnumerator EsperaRecarga()
     {
         yield return new WaitForSeconds(0.1f);
-        cargado = true;
+        disparable = true;
     }
 }

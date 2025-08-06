@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Activa y desactiva el arma
+/// </summary>
 public class ArmaMano : MonoBehaviour
 {
     public GameObject Arma;
@@ -10,8 +12,10 @@ public class ArmaMano : MonoBehaviour
 
     void Start()
     {
-        Mano.GetComponent<PickUpObject>().controladorArmaMano = false;
-        Arma.GetComponent<Disparo>().controladorArmaMano = false;
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+        Mano.GetComponent<PickUpObject>().armaActiva = false;
+        Arma.GetComponent<Disparo>().armaActiva = false;
     }
     void Update()
     {
@@ -19,14 +23,14 @@ public class ArmaMano : MonoBehaviour
         {
             if(!intercambioArmaMano)
             {
-                Mano.GetComponent<PickUpObject>().controladorArmaMano = true;
-                Arma.GetComponent<Disparo>().controladorArmaMano = true;
+                Mano.GetComponent<PickUpObject>().armaActiva = true;
+                Arma.GetComponent<Disparo>().armaActiva = true;
                 intercambioArmaMano = true;
             }
             else
             {
-                Mano.GetComponent<PickUpObject>().controladorArmaMano = false;
-                Arma.GetComponent<Disparo>().controladorArmaMano = false;
+                Mano.GetComponent<PickUpObject>().armaActiva = false;
+                Arma.GetComponent<Disparo>().armaActiva = false;
                 intercambioArmaMano = false;
             }
         }

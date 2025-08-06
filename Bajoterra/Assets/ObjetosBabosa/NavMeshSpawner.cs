@@ -24,7 +24,9 @@ public class NavMeshSpawner : MonoBehaviour
 
         StartCoroutine(InstanciarObjetosEnNavMesh());
     }
-
+    /// <summary>
+    /// Busca posiciones aleatorias dentro del área de navegación e instancia objetos
+    /// </summary>
     private IEnumerator InstanciarObjetosEnNavMesh()
     {
         int instanciados = 0;
@@ -32,34 +34,32 @@ public class NavMeshSpawner : MonoBehaviour
 
         while (instanciados < cantidad)
         {
-            foreach (var item in objetoAInstanciar)
+            foreach (GameObject item in objetoAInstanciar)
             {
                 Vector3 posicionAleatoria = GenerarPosicionAleatoriaEnCollider();
 
                 if (NavMesh.SamplePosition(posicionAleatoria, out NavMeshHit hit, rangoNavMesh, NavMesh.AllAreas))
                 {
                     Instancia = Instantiate(item, hit.position, Quaternion.identity);
-                    if (Instancia.GetComponent<CerebroBabosa>() != null)
+                    CerebroBabosa CB = Instancia.GetComponent<CerebroBabosa>();
+                    if (CB != null)
                     {
-                        CerebroBabosa cerebro = Instancia.GetComponent<CerebroBabosa>();
-                        switch (estado)
-                        {
-                            case 0: cerebro.CambiarModo(new BabosaSalvaje(cerebro)); break;
-                            case 1: cerebro.CambiarModo(new BabosaInteresada(cerebro)); break;
-                            case 2: cerebro.CambiarModo(new BabosaDomesticada(cerebro)); break;
-                            case 3: cerebro.CambiarModo(new BabosaAmigable(cerebro)); break;
-                        }
+                        yield return null;
+                        CB.CambiarMaquinaEstados(estado);
                     }
                     instanciados++;
                 }
 
             }
 
-            yield return null; // Esperar al siguiente frame para evitar bloqueos
+            yield return null;
         }
         this.enabled = false;
     }
-
+    /// <summary>
+    /// Aleatoriza posiciones en 3d
+    /// </summary>
+    /// <returns>Devuelve un Vector3 con la posición elegida</returns>
     private Vector3 GenerarPosicionAleatoriaEnCollider()
     {
         // Obtener los límites del collider
